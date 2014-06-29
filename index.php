@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Twin Oaks Labor Timer</title>
 
-		<script src="xdate.js"></script>
+		<script src="js/xdate.js"></script>
 		<script>
 			var timerStart = new XDate();
 			var currentArea = 0;
@@ -52,11 +52,6 @@
 				}
 			}
 
-			function displayIcons() {
-				var icons = repeatString("*",(Math.floor(fulfilledQuota + laborCreditsFrom(timerStart))));
-				$("#icons").html(icons);
-			}
-
 			function updateTimer(area) {
 				if(!$("#stop").is(":visible")) {
 					return;
@@ -64,8 +59,6 @@
 				var now = new XDate();
 				var debugHours = debugAddition / 60 / 60;
 
-				displayIcons();
-				
 				currentSelectionQuota = laborCreditsFrom(timerStart);
 				var progressBarStatus = currentSelectionQuota - (Math.floor(currentSelectionQuota));
 				var totalLaborCredits = (currentSelectionQuota + fulfilledQuota).toFixed(4);
@@ -105,7 +98,7 @@
 			}
 
 			#maintimer {
-				font-size: 64px;
+				font-size: 48px;
 				text-align: center;
 			}
 
@@ -122,6 +115,7 @@
 				height: 50px !important;
 				border: 1px solid #CCCCCC;
 				background-color: #ABC8B9 !important;
+				display:none;
 			}
 
 			button#stop {
@@ -147,9 +141,13 @@
 				width: 100% !important; 
 			}
 
+			div.row {
+
+			}
+
 		</style>
     <!-- Bootstrap -->
-    <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
 		<div class="container-fluid">
@@ -175,12 +173,13 @@
 			</div>
 			<div class="row">
 				<div id=icons class="col-xs-12">
+					<span class="glyphicon glyphicon-calendar"></span>
 				</div>
 			</div>
 		</div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="bootstrap.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
   </body>
 </html>
