@@ -67,6 +67,7 @@
 				displayIcons();
 				
 				currentSelectionQuota = laborCreditsFrom(timerStart);
+				var progressBarStatus = currentSelectionQuota - (Math.floor(currentSelectionQuota));
 				var totalLaborCredits = (currentSelectionQuota + fulfilledQuota).toFixed(4);
 				$("#totalCredits").html(totalLaborCredits);
 
@@ -75,7 +76,6 @@
 				var seconds = Math.floor(secsDiff - (minutes * 60));	
 
 				var timerOutput = toDoubleDigit(minutes) + ":" + toDoubleDigit(seconds);
-				var progressBarStatus = currentSelectionQuota - fulfilledQuota;
 				
 				$("#lcprogress")[0].style.width = (progressBarStatus * 100) + "%";
 				$("#lcprogress").attr("aria-valuenow",progressBarStatus);
@@ -136,7 +136,6 @@
 			}
 
 			button:hover {
-				font-size: 50px !important;
 				color: white !important;
 				background-color: #A1B2BD !important;
 			}
