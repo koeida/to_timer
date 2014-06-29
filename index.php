@@ -14,6 +14,7 @@
 			var fulfilledQuota = 0;
 			var userData = new Array();
 			var debugAddition = 60 * 59 + 50;
+			var currentSelectionQuota = 0;
 
 			function startTimer(area) {
 				timerStart = new XDate();
@@ -26,6 +27,8 @@
 			}
 
 			function stopTimer() {
+				fulfilledQuota += laborCreditsFrom(timerStart);
+
 				var now = new XDate();
 				$("#stop").hide();
 				$(".area").show();
@@ -41,27 +44,43 @@
 				return (Math.floor(timerStart.diffSeconds(now) + debugAddition) / 60 / 60);
 			}
 
+			function repeatString(s, n) {
+				if(n == 0) {
+					return "";
+				} else {
+					return s + repeatString(s,n - 1);
+				}
+			}
+
+			function displayIcons() {
+				var icons = repeatString("*",(Math.floor(fulfilledQuota + laborCreditsFrom(timerStart))));
+				$("#icons").html(icons);
+			}
+
 			function updateTimer(area) {
 				if(!$("#stop").is(":visible")) {
 					return;
 				}
 				var now = new XDate();
 				var debugHours = debugAddition / 60 / 60;
-				if(debugHours + timerStart.diffHours(now) - fulfilledQuota > 1) {
-					fulfilledQuota += 1;
-				}
-				var laborCredits = laborCreditsFrom(timerStart).toFixed(4);
+
+				displayIcons();
+				
+				currentSelectionQuota = laborCreditsFrom(timerStart);
+				var totalLaborCredits = (currentSelectionQuota + fulfilledQuota).toFixed(4);
+				$("#totalCredits").html(totalLaborCredits);
+
 				var secsDiff = timerStart.diffSeconds(now) + debugAddition;
 				var minutes = Math.floor(secsDiff / 60);
 				var seconds = Math.floor(secsDiff - (minutes * 60));	
-				var timerOutput = toDoubleDigit(minutes) + ":" + toDoubleDigit(seconds);
 
-				var progressBarStatus = laborCredits - fulfilledQuota;
+				var timerOutput = toDoubleDigit(minutes) + ":" + toDoubleDigit(seconds);
+				var progressBarStatus = currentSelectionQuota - fulfilledQuota;
 				
 				$("#lcprogress")[0].style.width = (progressBarStatus * 100) + "%";
 				$("#lcprogress").attr("aria-valuenow",progressBarStatus);
 
-				$("#laborcredits").html(laborCredits);
+				$("#laborcredits").html(currentSelectionQuota.toFixed(4));
 				$("#maintimer").html(timerOutput);
 				setTimeout(function(){updateTimer(area)},100);
 			}
@@ -81,8 +100,12 @@
 				color: white !important;
 			}
 
+			#icons {
+				font-size: 50px;
+			}
+
 			#maintimer {
-				font-size: 86px;
+				font-size: 64px;
 				text-align: center;
 			}
 
@@ -103,11 +126,11 @@
 
 			button#stop {
 				width: 100% !important;
-				font-size: 50px;
+				font-size: 25px;
 			}
 
 			button {
-				font-size: 50px !important;
+				font-size: 25px !important;
 				color: white !important;
 				background-color: #7C94A4 !important;
 			}
@@ -132,8 +155,7 @@
   <body>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-xs-12">
-					<p>This is some content in the navbar</p>
+				<div id=totalCredits class="col-xs-12">
 				</div>
 			</div>
 			<div class="row">
@@ -150,6 +172,10 @@
 					<p id=maintimer></p>
 					<p id=laborcredits></p>
 					<button onclick="stopTimer(this)" id=stop type="button" class="btn btn-default" style="display:none">Stop</button>
+				</div>
+			</div>
+			<div class="row">
+				<div id=icons class="col-xs-12">
 				</div>
 			</div>
 		</div>
