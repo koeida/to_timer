@@ -12,8 +12,8 @@
 			var currentArea = 0;
 			var quota = 6;
 			var fulfilledQuota = 0;
-			var userData = new Array();
-			var debugAddition = 60 * 59 + 50;
+			var userData = {};
+			var debugAddition = 0;// 60 * 59 + 50;
 			var currentSelectionQuota = 0;
 
 			function getAreas() {
@@ -30,6 +30,7 @@
 
 			function startTimer(area) {
 				timerStart = new XDate();
+				currentArea = area.name;
 				$("#stop").show();
 				$(".area").hide();
 				$("#maintimer").show();
@@ -39,7 +40,13 @@
 			}
 
 			function stopTimer() {
-				fulfilledQuota += laborCreditsFrom(timerStart);
+				var newCredits = laborCreditsFrom(timerStart);
+				fulfilledQuota += newCredits;
+				if(currentArea in userData) {
+					userData[currentArea] += newCredits;
+				} else {
+					userData[currentArea] = newCredits;	
+				}
 
 				var now = new XDate();
 				$("#stop").hide();
@@ -68,26 +75,24 @@
 				if(!$("#stop").is(":visible")) {
 					return;
 				}
+
 				var areaName = area.name;
+				var existingAreaCredit = (areaName in userData) ? userData[areaName] : 0;
+				currentSelectionQuota = laborCreditsFrom(timerStart) + existingAreaCredit;
 				var now = new XDate();
 				var debugHours = debugAddition / 60 / 60;
-
-				currentSelectionQuota = laborCreditsFrom(timerStart);
 				var progressBarStatus = currentSelectionQuota - (Math.floor(currentSelectionQuota));
 				var totalLaborCredits = (currentSelectionQuota + fulfilledQuota).toFixed(4);
 				var dateStamp = timerStart.toString("ddd M/d/yy");
 				var statusLine = dateStamp + " | " + totalLaborCredits + " | " + "Current Area: " + areaName; 
-				$("#statusbar").html(statusLine);
-
 				var secsDiff = timerStart.diffSeconds(now) + debugAddition;
 				var minutes = Math.floor(secsDiff / 60);
 				var seconds = Math.floor(secsDiff - (minutes * 60));	
-
 				var timerOutput = toDoubleDigit(minutes) + ":" + toDoubleDigit(seconds);
 				
+				$("#statusbar").html(statusLine);
 				$("#lcprogress")[0].style.width = (progressBarStatus * 100) + "%";
 				$("#lcprogress").attr("aria-valuenow",progressBarStatus);
-
 				$("#laborcredits").html("(" + currentSelectionQuota.toFixed(4) + ")");
 				$("#maintimer").html(timerOutput);
 				setTimeout(function(){updateTimer(area)},100);
@@ -111,8 +116,6 @@
 			#icons {
 				font-size: 50px;
 			}
-
-
 
 			#lcprogress {
 				background-color: #65A184 !important;
