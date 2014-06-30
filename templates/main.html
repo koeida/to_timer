@@ -82,7 +82,7 @@
 				var now = new XDate();
 				var debugHours = debugAddition / 60 / 60;
 				var progressBarStatus = currentSelectionQuota - (Math.floor(currentSelectionQuota));
-				var totalLaborCredits = (currentSelectionQuota + fulfilledQuota).toFixed(4);
+				var totalLaborCredits = (currentSelectionQuota + fulfilledQuota - existingAreaCredit).toFixed(4);
 				var dateStamp = timerStart.toString("ddd M/d/yy");
 				var statusLine = dateStamp + " | " + totalLaborCredits + " | " + "Current Area: " + areaName; 
 				var secsDiff = timerStart.diffSeconds(now) + debugAddition;
